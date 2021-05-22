@@ -9,6 +9,11 @@ namespace LandingSupport
     public class LandingArea
     {
         /// <summary>
+        /// The position of the last rocket checked
+        /// </summary>
+        private Point? _lastRocketPosition = null;
+
+        /// <summary>
         /// Message returned when landing position is valid
         /// </summary>
         public static readonly string Ok = "ok for landing";
@@ -33,7 +38,7 @@ namespace LandingSupport
         /// <summary>
         /// The landing platform of the area
         /// </summary>
-        public LandingPlatform LandingPlatform{ get; }
+        public LandingPlatform LandingPlatform { get; }
 
         /// <summary>
         /// Creates an instance of the <see cref="LandingArea" /> class
@@ -42,12 +47,12 @@ namespace LandingSupport
         /// <param name="width">The width of the landing area</param>
         public LandingArea(int height, int width, LandingPlatform landingPlatform)
         {
-            if(height <= 0)
+            if (height <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(height), height, "The value of the height must be greater than 0");
             }
 
-            if(width <= 0)
+            if (width <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(width), width, "The value of the width must be greater than 0");
             }
@@ -58,7 +63,7 @@ namespace LandingSupport
             int maxXPosition = landingPlatform.Position.X + landingPlatform.Width - 1;
             int maxYPosition = landingPlatform.Position.Y + landingPlatform.Height - 1;
 
-            if(IsOutOfPlatform(new Point(maxXPosition, maxYPosition)))
+            if (IsOutOfArea(new Point(maxXPosition, maxYPosition)))
             {
                 throw new ArgumentOutOfRangeException(nameof(landingPlatform), landingPlatform, "The landing platform is out of bounds");
             }
@@ -76,12 +81,27 @@ namespace LandingSupport
         /// </returns>
         public string CheckLanding(Point position)
         {
-            if(IsOutOfPlatform(position))
+            string landingResponse;
+
+            if (IsInPlatform(position))
             {
-                return OutOfPlatform;
+                if (CollidesWithLastRocket(position))
+                {
+                    landingResponse = Clash;
+                }
+                else
+                {
+                    landingResponse = Ok;
+                }
+            }
+            else
+            {
+                landingResponse = OutOfPlatform;
             }
 
-            throw new NotImplementedException();
+            _lastRocketPosition = position;
+
+            return landingResponse;
         }
 
         /// <summary>
@@ -89,9 +109,47 @@ namespace LandingSupport
         /// </summary>
         /// <param name="p">The point to check</param>
         /// <returns>True if the point is out of bounds, false otherwise</returns>
-        private bool IsOutOfPlatform(Point p)
+        private bool IsOutOfArea(Point p)
         {
             return p.X < 0 || p.Y < 0 || p.X >= Width || p.Y >= Height;
+        }
+
+        /// <summary>
+        /// Checks if a point is in the platform
+        /// </summary>
+        /// <param name="point">The point to check</param>
+        /// <returns>True if the point is in the platform, false otherwise</returns>
+        private bool IsInPlatform(Point point)
+        {
+            int platformX = LandingPlatform.Position.X;
+            int platformY = LandingPlatform.Position.Y;
+            int platformWidth = LandingPlatform.Width;
+            int platformHeight = LandingPlatform.Height;
+
+            bool horizontalBoundCheck = platformX <= point.X && ((platformX + platformWidth - 1) >= point.X);
+            bool verticalBoundCheck = platformY <= point.Y && ((platformY + platformHeight - 1) >= point.Y);
+
+            return horizontalBoundCheck && verticalBoundCheck;
+        }
+
+        /// <summary>
+        /// Checks if the position supplied collides with the previous rocket
+        /// </summary>
+        /// <param name="position">The position to check</param>
+        /// <returns>True if it collides, false otherwise</returns>
+        private bool CollidesWithLastRocket(Point position)
+        {
+            if (_lastRocketPosition is Point lastPosition)
+            {
+                int xDiff = Math.Abs(lastPosition.X - position.X);
+                int yDiff = Math.Abs(lastPosition.Y - position.Y);
+
+                return xDiff < 2 && yDiff < 2;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

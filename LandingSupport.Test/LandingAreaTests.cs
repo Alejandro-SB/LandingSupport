@@ -8,7 +8,7 @@ namespace LandingSupport.Test
     public class LandingAreaTests
     {
         private readonly LandingArea _landingArea;
-        
+
         public LandingAreaTests()
         {
             var landingPlatform = new LandingPlatform(new Point(5, 5), 10, 10);
@@ -112,6 +112,38 @@ namespace LandingSupport.Test
             //Assert
             Assert.Equal(LandingArea.Ok, firstRocketResponse);
             Assert.Equal(LandingArea.Clash, secondRocketResponse);
+        }
+
+        [Fact]
+        public void CheckLanding_Returns_Clash_When_Previous_Rocket_Is_One_Square_Away()
+        {
+            //Arrange
+            var firstRocketLandingPoint = new Point(5, 5);
+            var secondRocketLandingPoint = new Point(6, 6);
+
+            //Act
+            var firstRocketResponse = _landingArea.CheckLanding(firstRocketLandingPoint);
+            var secondRocketResponse = _landingArea.CheckLanding(secondRocketLandingPoint);
+
+            //Assert
+            Assert.Equal(LandingArea.Ok, firstRocketResponse);
+            Assert.Equal(LandingArea.Clash, secondRocketResponse);
+        }
+
+        [Fact]
+        public void CheckLanding_Returns_Ok_When_Rockets_Are_More_Than_One_Square_Away()
+        {
+            //Arrange
+            var firstRocketLandingPoint = new Point(5, 5);
+            var secondRocketLandingPoint = new Point(6, 7);
+
+            //Act
+            var firstRocketResponse = _landingArea.CheckLanding(firstRocketLandingPoint);
+            var secondRocketResponse = _landingArea.CheckLanding(secondRocketLandingPoint);
+
+            //Assert
+            Assert.Equal(LandingArea.Ok, firstRocketResponse);
+            Assert.Equal(LandingArea.Ok, secondRocketResponse);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace LandingSupport.Test
         public void Constructor_Stablishes_Values_On_Initialization()
         {
             //Arrange
-            Point p = new(5,5);
+            Point p = new(5, 5);
             int height = 10;
             int width = 10;
 
