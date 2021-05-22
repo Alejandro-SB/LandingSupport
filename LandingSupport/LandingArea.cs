@@ -41,11 +41,16 @@ namespace LandingSupport
         public LandingPlatform LandingPlatform { get; }
 
         /// <summary>
+        /// The position of the platform
+        /// </summary>
+        public Point PlatformPosition { get; }
+
+        /// <summary>
         /// Creates an instance of the <see cref="LandingArea" /> class
         /// </summary>
         /// <param name="height">The height of the landing area</param>
         /// <param name="width">The width of the landing area</param>
-        public LandingArea(int height, int width, LandingPlatform landingPlatform)
+        public LandingArea(int height, int width, LandingPlatform landingPlatform, Point platformPosition)
         {
             if (height <= 0)
             {
@@ -60,14 +65,16 @@ namespace LandingSupport
             Height = height;
             Width = width;
 
-            int maxXPosition = landingPlatform.Position.X + landingPlatform.Width - 1;
-            int maxYPosition = landingPlatform.Position.Y + landingPlatform.Height - 1;
+            int maxXPosition = platformPosition.X + landingPlatform.Width - 1;
+            int maxYPosition = platformPosition.Y + landingPlatform.Height - 1;
+            var platformPositionOppositeCorner = new Point(maxXPosition, maxYPosition);
 
-            if (IsOutOfArea(new Point(maxXPosition, maxYPosition)))
+            if (IsOutOfArea(platformPosition) || IsOutOfArea(platformPositionOppositeCorner))
             {
-                throw new ArgumentOutOfRangeException(nameof(landingPlatform), landingPlatform, "The landing platform is out of bounds");
+                throw new ArgumentOutOfRangeException(nameof(platformPosition), platformPosition, "Platform position is out of area");
             }
 
+            PlatformPosition = platformPosition;
             LandingPlatform = landingPlatform;
         }
 
@@ -121,8 +128,8 @@ namespace LandingSupport
         /// <returns>True if the point is in the platform, false otherwise</returns>
         private bool IsInPlatform(Point point)
         {
-            int platformX = LandingPlatform.Position.X;
-            int platformY = LandingPlatform.Position.Y;
+            int platformX = PlatformPosition.X;
+            int platformY = PlatformPosition.Y;
             int platformWidth = LandingPlatform.Width;
             int platformHeight = LandingPlatform.Height;
 

@@ -11,8 +11,12 @@ namespace LandingSupport.Test
 
         public LandingAreaTests()
         {
-            var landingPlatform = new LandingPlatform(new Point(5, 5), 10, 10);
-            _landingArea = new LandingArea(100, 100, landingPlatform);
+            var landingPlatform = new LandingPlatform(10, 10);
+            Point platformPosition = new Point(5, 5);
+            int height = 100;
+            int width = 100;
+
+            _landingArea = new LandingArea(height, width, landingPlatform, platformPosition);
         }
 
         [Fact]
@@ -22,11 +26,12 @@ namespace LandingSupport.Test
             int zeroHeight = 0;
             int negativeHeight = -3;
             const int width = 5;
-            var landingPlatform = new LandingPlatform(new Point(1, 1), 1, 1);
+            var landingPlatform = new LandingPlatform(1, 1);
+            var platformPosition = new Point(1, 1);
 
             //Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(zeroHeight, width, landingPlatform));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(negativeHeight, width, landingPlatform));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(zeroHeight, width, landingPlatform, platformPosition));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(negativeHeight, width, landingPlatform, platformPosition));
         }
 
         [Fact]
@@ -36,11 +41,12 @@ namespace LandingSupport.Test
             const int height = 55;
             int zeroWidth = 0;
             int negativeWidth = -15;
-            var landingPlatform = new LandingPlatform(new Point(1, 1), 1, 1);
+            var landingPlatform = new LandingPlatform(1, 1);
+            var platformPosition = new Point(1, 1);
 
             //Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(height, zeroWidth, landingPlatform));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(height, negativeWidth, landingPlatform));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(height, zeroWidth, landingPlatform, platformPosition));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(height, negativeWidth, landingPlatform, platformPosition));
         }
 
         [Fact]
@@ -49,10 +55,11 @@ namespace LandingSupport.Test
             //Arrange
             const int height = 100;
             const int width = 100;
-            var landingPlatform = new LandingPlatform(new Point(99, 99), 1, 1);
+            var landingPlatform = new LandingPlatform(1, 1);
+            var platformPosition = new Point(99, 99);
 
             //Act
-            var landingArea = new LandingArea(height, width, landingPlatform);
+            var landingArea = new LandingArea(height, width, landingPlatform, platformPosition);
 
             //Assert
             Assert.Equal(height, landingArea.Height);
@@ -66,10 +73,11 @@ namespace LandingSupport.Test
             //Arrange
             const int height = 100;
             const int width = 100;
-            var landingPlatform = new LandingPlatform(new Point(100, 100), 2, 2);
+            var landingPlatform = new LandingPlatform(2, 2);
+            var platformPosition = new Point(100, 100);
 
             //Assert
-            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(height, width, landingPlatform));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new LandingArea(height, width, landingPlatform, platformPosition));
         }
 
         [Fact]
